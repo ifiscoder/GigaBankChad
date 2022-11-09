@@ -1324,4 +1324,4 @@ if __name__ == '__main__':
     # args = parser.parse_args()
     # port = args.port
     logging.debug('Banking Server has Started ')
-    application.run()
+    application.run(host='0.0.0.0')
