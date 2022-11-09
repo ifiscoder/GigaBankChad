@@ -11,6 +11,7 @@ db = mysql.connector.connect(
     password="8460957951",
     database="bankingSystem"
 )
+
 cursor = db.cursor()
 
 

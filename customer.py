@@ -4,7 +4,6 @@ from utility.encrypt import encrypt
 from datetime import datetime
 import mysql.connector
 
-
 db = mysql.connector.connect(
     host="bankapp.cvvwrizkhvgp.ap-south-1.rds.amazonaws.com",
     user="admin",
@@ -13,11 +12,9 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 
-
 def getdate():
     now = datetime.now()
     return now.strftime("%d/%m/%Y %H:%M:%S")
-
 
 class Customers:
     def __init__(self):
@@ -42,7 +39,7 @@ class Customers:
         query = """
                 INSERT INTO Customers(customer_id, last_name, middle_name, first_name, dob, contact_no, email_id, address, password, ssn, active, login_history)
                 VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s');""" % (customer_id, last_name, middle_name,
-                                                                                                    first_name, dob, contact_no, email_id, address, encrypt(password), ssn, active, login_history)
+            first_name, dob, contact_no, email_id, address, encrypt(password), ssn, active, login_history)
         cursor.execute(query)
         try:
             db.commit()
@@ -79,8 +76,6 @@ class Customers:
     #         return customer_id, 'is already having', account_type
 
 #################        FUNCTION TO OPEN NEW ACCOUNT                    #################
-
-
     def open_account(self, customer_id, account_type):
         if self.check_account(customer_id, account_type) == 1:
             return 'Customer already have ', account_type, 'account'
@@ -138,8 +133,6 @@ class Customers:
 
 
 #################        FUNCTION TO GET ACCOUNT UPDATE REQUEST's LIST                    #################
-
-
     def update_info_reqest_list(self, userid):
         query = """
             SELECT userid, contact_no, email_id, address, status, approver FROM  Updateinfo
@@ -154,8 +147,6 @@ class Customers:
 
 
 #################        FUNCTION TRANSFER FUNDS                    #################
-
-
     def fund_transfers(self, account1, account2, amount, transaction_no=-1):
         amount = float(amount)
         account1 = int(account1)
@@ -168,7 +159,7 @@ class Customers:
         cursor.execute(query)
         result = cursor.fetchall()
         # print(result[0])
-        if result is not None:
+        if result is not None :
             if result[0][0] != 1:
                 print('Receiver\'s Account not active')
                 return 'Receiver\'s Account not active'
@@ -178,7 +169,7 @@ class Customers:
 
         print(amount, account1, account2)
 
-        db.commit()  # REQUIRED DO NOT DELETE
+        db.commit() # REQUIRED DO NOT DELETE
         # CHECK IF THE "TRANSFER" IS A DEPOSIT
         query = """
                 Select deposit from Transactions WHERE transaction_no = %d;
@@ -192,8 +183,7 @@ class Customers:
                 """ % (amount, account2)
             cursor.execute(query)
 
-            str1 = '$' + str(amount) + ' deposited to ' + \
-                str(account2) + ' on ' + getdate() + ',<br>'
+            str1 = '$' + str(amount) + ' deposited to ' + str(account2) + ' on ' + getdate() + ',<br>'
             query = """
                     UPDATE Accounts SET transaction_history=concat('%s', transaction_history) where account_no = %d;
                 """ % (str1, account2)
@@ -206,14 +196,14 @@ class Customers:
             cursor.execute(query)
             result = cursor.fetchall()
             # bal = result[0][0]
-            if result is not None:
+            if result is not None :
                 if result[0][1] != 1:
                     print('Sender\'s Account not active')
                     return 'Sender\'s Account not active'
-                if result[0][2] == 'credit' and float(result[0][0]) - amount < -5000.0:
+                if result[0][2] == 'credit' and float(result[0][0]) - amount <  -5000.0 :
                     print('Insufficient Balance')
                     print(transaction_no)
-                    if transaction_no != -1:
+                    if transaction_no!=-1:
                         self.deny_funds_requested(transaction_no)
                     return 'Insufficient Balance in Credit Card'
                 if result[0][0] < amount and result[0][2] != 'credit':
@@ -233,14 +223,12 @@ class Customers:
                 """ % (amount, account2)
             cursor.execute(query)
 
-            str1 = '$' + str(amount) + ' credited from ' + \
-                str(account1) + ' on ' + getdate() + ',<br>'
+            str1 = '$' + str(amount) + ' credited from ' + str(account1) + ' on ' + getdate() + ',<br>'
             query = """
                     UPDATE Accounts SET transaction_history=concat('%s', transaction_history) where account_no = %d;
                 """ % (str1, account2)
             cursor.execute(query)
-            str2 = '$' + str(amount) + ' transfered to ' + \
-                str(account2) + ' on ' + getdate() + ',<br>'
+            str2 =  '$' + str(amount) + ' transfered to ' + str(account2) + ' on ' + getdate() + ',<br>'
             query = """
                     UPDATE Accounts SET transaction_history=concat('%s', transaction_history) where account_no = %d;
                 """ % (str2, account1)
@@ -290,11 +278,11 @@ class Customers:
         result = cursor.fetchall()
         # bal = result[0][0]
         # print(result)
-        if len(result) != 0:
+        if len(result)!=0 :
             if result[0][1] != 1:
                 print('Account not active')
                 return 'Account not active'
-            if result[0][2] == 'credit' and float(result[0][0]) - amount < -5000.0:
+            if result[0][2] == 'credit' and float(result[0][0]) - amount <  -5000.0 :
                 print('Insufficient Balance')
                 # print(transaction_no)
                 return 'Insufficient Balance in Credit Card'
@@ -310,7 +298,7 @@ class Customers:
             """ % (float(amount), int(account))
         cursor.execute(query)
 
-        str1 = '$' + str(amount) + ' debited  ' + ' on ' + getdate() + ',<br>'
+        str1 = '$' + str(amount) + ' debited  ' +  ' on ' + getdate() + ',<br>'
         query = """
                 UPDATE Accounts SET transaction_history=concat('%s', transaction_history) where account_no = %d;
             """ % (str1, int(account))
@@ -332,7 +320,7 @@ class Customers:
         cursor.execute(query)
         result = cursor.fetchall()
         # print(result[0])
-        if len(result) != 0:
+        if len(result)!=0 :
             if result[0][0] != 1:
                 print('Account(to credit) not active')
                 return 'Account(to credit) not active'
@@ -345,8 +333,7 @@ class Customers:
             """ % (float(amount), int(account))
         cursor.execute(query)
 
-        str1 = '$' + str(amount) + ' direct deposited  ' + \
-            ' on ' + getdate() + ',<br>'
+        str1 = '$' + str(amount) + ' direct deposited  ' +  ' on ' + getdate() + ',<br>'
         print(str1)
         query = """
                 UPDATE Accounts SET transaction_history=concat('%s', transaction_history) where account_no = %d;
@@ -448,11 +435,11 @@ class Customers:
             SELECT account_no, account_type, balance FROM Accounts WHERE customer_id='%s';""" % (customer_id)
         cursor.execute(query)
         # result = cursor.fetchall()
-        response = {'checkin': 'None', 'savings': 'None', 'credit': 'None'}
+        response = {'checkin': 'None' , 'savings': 'None', 'credit': 'None'}
         for val in cursor.fetchall():
-            response[val[1]] = {
-                'Account': val[0],
-                'Balance': val[2]
+            response[val[1]]= {
+                'Account' : val[0],
+                'Balance' : val[2]
             }
             # print(val)
         # print(response)
@@ -479,23 +466,23 @@ class Customers:
             print('Customer doesn\'t exists')
             return 'None'
         res = {'first_name': result[0][0],
-               'middle_name': result[0][1],
-               'last_name': result[0][2],
-               'dob': result[0][3],
-               'contact_no': result[0][4],
-               'email_id': result[0][5],
-               'address': result[0][6],
-               'ssn': result[0][7],
-               'active': result[0][8],
-               'login_history': result[0][9]
-               }
+                'middle_name': result[0][1],
+                'last_name': result[0][2],
+                'dob': result[0][3],
+                'contact_no': result[0][4],
+                'email_id': result[0][5],
+                'address': result[0][6],
+                'ssn': result[0][7],
+                'active': result[0][8],
+                'login_history': result[0][9]
+                }
         return res
 
 #################        FUNCTION TO UPDATE LOGIN HISTORY                 #################
     def update_login_history(self, customer_id):
         query = """
                 UPDATE Customers SET login_history=concat('%s', login_history) where customer_id = '%s';
-            """ % (getdate(), customer_id)
+            """ % (getdate() , customer_id)
         cursor.execute(query)
         try:
             db.commit()
@@ -555,8 +542,6 @@ class Customers:
 
 
 #################                 FUNCTION TO MAKE CASHIER CHEQUE            #################
-
-
     def make_cashier_check(self, issuer_id, to_account, from_account, amount):
         if self.verify_account(int(from_account)) == 0:
             return 'Sender\'s Account doesn\'t Exists'
@@ -603,13 +588,12 @@ class Customers:
         from_account = result[0][1]
         amount = result[0][2]
 
-        transfer_status = self.fund_transfers(
-            int(from_account), int(to_account), float(amount))
-        if transfer_status != 'done':
+        transfer_status = self.fund_transfers(int(from_account), int(to_account), float(amount))
+        if  transfer_status != 'done':
             return transfer_status
 
         query = """
-            UPDATE Cheque SET active=0 WHERE cheque_no=%d ;""" % (int(cheque_no))
+            UPDATE Cheque SET active=0 WHERE cheque_no=%d ;"""%(int(cheque_no))
         cursor.execute(query)
         try:
             db.commit()
@@ -685,7 +669,7 @@ class Customers:
 #################                 FUNCTION TO HANDLE APPOINTMENT             #################
     def handle_appointment(self, appointment_no):
         query = """
-            UPDATE Appointments  SET status = 0 where appointment_no=%d ; """ % (int(appointment_no))
+            UPDATE Appointments  SET status = 0 where appointment_no=%d ; """%(int(appointment_no))
         cursor.execute(query)
         try:
             db.commit()
@@ -698,7 +682,7 @@ class Customers:
 #################                 FUNCTION TO GET APPOINTMENT             #################
     def get_appointment(self, customer_id):
         query = """
-            SELECT * FROM Appointments where customer_id = '%s' and status = 1 ; """ % (customer_id)
+            SELECT * FROM Appointments where customer_id = '%s' and status = 1 ; """%(customer_id)
         cursor.execute(query)
         result = cursor.fetchall()
         # print(len(result))
@@ -741,7 +725,6 @@ class Customers:
             db.rollback()
             print('Cannot make request:', e)
             return 'Try Again Later'
-
 
 customer = Customers()
 # customer.create_customer_id('anilkh', "khadwal",  "", "ROHIT",  "8894141486", "anil@gmail.com", "password", "ssn", 1)
