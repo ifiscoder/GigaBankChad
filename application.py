@@ -5,6 +5,7 @@ from customer import Customers
 from employee import Employee
 from otp import OtpInterface
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO, filename='SystemLogs/bank.log', filemode='w',
                     format='%(asctime)-15s - %(name)s - %(levelname)s - %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
@@ -1324,4 +1325,4 @@ if __name__ == '__main__':
     # args = parser.parse_args()
     # port = args.port
     logging.debug('Banking Server has Started ')
-    application.run(host='0.0.0.0')
+    application.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
