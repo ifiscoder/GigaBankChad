@@ -8,7 +8,7 @@ from customer import Customers
 class OtpInterface:
     def __init__(self):
         # Create empty pyotp object
-        self.totp = pyotp.TOTP(pyotp.random_base32(), interval = 300)
+        self.totp = pyotp.TOTP(pyotp.random_base32(), interval=300)
 
     # Returns the pyotp object
     def getObj(self):
@@ -17,11 +17,11 @@ class OtpInterface:
     # Function to create pyotp object with an otp changing every 5 minutes. Sends the first OTP to the input phone number using AWS SNS service.
     def send_otp(self, phone):
         # Append country code to phone number
-        phone = "+1" + phone
+        phone = "+91" + phone
 
         # Create seeded pyotp object
         # self.totp = pyotp.TOTP(pyotp.random_base32(), interval = 300)
-        
+
         # Create SNS client
         client = boto3.client(
             "sns",

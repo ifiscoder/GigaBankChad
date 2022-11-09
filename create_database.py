@@ -4,14 +4,16 @@ from employee import Employee
 from utility.encrypt import encrypt
 from datetime import datetime
 
+
 def getdate():
     now = datetime.now()
     return now.strftime("%d/%m/%Y %H:%M:%S")
 
+
 db = mysql.connector.connect(
-    host="xxx.amazonaws.com",
-    user="root",
-    password="xxx",
+    host="bankapp.cvvwrizkhvgp.ap-south-1.rds.amazonaws.com",
+    user="admin",
+    password="8460957951",
     database="bankingSystem"
 )
 
@@ -114,7 +116,6 @@ try:
 except Exception as e:
     db.rollback()
     print(e)
-
 
 
 #                               creating table : Employee                           #
@@ -271,7 +272,7 @@ except Exception as e:
 cursor.execute("""
     CREATE TABLE Cheque(
         cheque_no INT NOT NULL AUTO_INCREMENT,
-        issuer_id VARCHAR(32), 
+        issuer_id VARCHAR(32),
         to_account INT NOT NULL,
         from_account INT NOT NULL,
         amount FLOAT NOT NULL,
@@ -286,14 +287,20 @@ try:
 except Exception as e:
     db.rollback()
     print(e)
-    
+
 ##############              CREATING DUMMY USERS                                    ##############
 customer = Customers()
 employee = Employee()
-customer.create_customer_id('cust1', "green",  "", "rachel",  "0004141486", "rachel@gmail.com", "password", "rachelssn", getdate(), 1)
-customer.create_customer_id('cust2', "geller",  "", "monika",  "0004141485", "monika@gmail.com", "password", "monikassn", getdate(), 1)
-customer.create_customer_id('cust3', "buffay",  "", "phoebe",  "0004141489", "phoebe@gmail.com", "password", "phoebessn", getdate(), 1)
+customer.create_customer_id('cust1', "green",  "", "rachel",  "0004141486",
+                            "rachel@gmail.com", "password", "rachelssn", getdate(), 1)
+customer.create_customer_id('cust2', "geller",  "", "monika",  "0004141485",
+                            "monika@gmail.com", "password", "monikassn", getdate(), 1)
+customer.create_customer_id('cust3', "buffay",  "", "phoebe",  "0004141489",
+                            "phoebe@gmail.com", "password", "phoebessn", getdate(), 1)
 
-employee.create_employee('empl1', "geller",  "", "ross",  "0005709722", "ross@gmail.com", "password","gellerssn", getdate(), 1)
-employee.create_employee('empl2', "bing",  "", "chandler",  "0005709723", "chandler@gmail.com", "password","bing1ssn", getdate(), 2)
-employee.create_employee('empl3', "tribbiani",  "", "joey",  "0005709721", "joey@gmail.com", "password","joey1ssn", getdate(), 3)
+employee.create_employee('empl1', "geller",  "", "ross",  "0005709722",
+                         "ross@gmail.com", "password", "gellerssn", getdate(), 1)
+employee.create_employee('empl2', "bing",  "", "chandler",  "0005709723",
+                         "chandler@gmail.com", "password", "bing1ssn", getdate(), 2)
+employee.create_employee('empl3', "tribbiani",  "", "joey",  "0005709721",
+                         "joey@gmail.com", "password", "joey1ssn", getdate(), 3)
